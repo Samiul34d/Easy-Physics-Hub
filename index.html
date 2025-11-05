@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Easy Physics Zone - Formula Hub For C.H.S Students</title>
+<style>
+body{font-family:sans-serif;margin:0;padding:0;background:#f4f4f9;color:#111;transition:0.3s;}
+header{background:#2b8cff;color:white;padding:16px;text-align:center;font-size:1.5em;position:sticky;top:0;z-index:100;}
+.container{max-width:900px;margin:20px auto;padding:0 16px;}
+.category{margin-bottom:24px;}
+.category h2{border-bottom:2px solid #2b8cff;padding-bottom:6px;color:#2b8cff;}
+.formula-card{background:white;margin:12px 0;padding:12px;border-radius:10px;box-shadow:0 4px 10px rgba(0,0,0,0.08);}
+.formula-card h3{margin-top:0;color:#333;}
+.formula-exp{background:#eef5ff;padding:8px;border-radius:6px;margin:6px 0;}
+.formula-use{background:#fff3e6;padding:8px;border-radius:6px;margin:6px 0;}
+.dark{background:#121212;color:#eee;}
+.dark header{background:#1f1f1f;color:#2b8cff;}
+.dark .formula-card{background:#1f1f1f;box-shadow:none;}
+.dark .formula-exp{background:#2b2b2b;}
+.dark .formula-use{background:#2b2b2b;}
+button{padding:8px 12px;border:none;border-radius:6px;background:#2b8cff;color:white;cursor:pointer;margin-top:6px;}
+button:hover{opacity:0.85;}
+input{padding:6px 10px;margin-top:6px;width:100%;border-radius:6px;border:1px solid #ccc;}
+.search-bar{margin-bottom:20px;}
+a.download-link{color:#2b8cff;text-decoration:none;font-weight:bold;margin-left:6px;}
+</style>
+</head>
+<body>
+<header>
+Easy Physics Zone - Formula Hub
+<button id="themeToggle" style="float:right;background:#ff6b6b;font-size:0.9em;">🌙</button>
+</header>
+<div class="container">
+<div class="search-bar">
+<input type="text" id="searchInput" placeholder="সূত্র / কীওয়ার্ড খুঁজুন..." onkeyup="searchFormulas()">
+</div>
+
+<div id="chaptersContainer">
+<!-- Chapters will be injected here -->
+</div>
+</div>
+
+<script>
+const chapters = [
+/* ===== CHAPTERS: FORMULAS ONLY ===== */
+{
+id:'motion',
+title:'গতি (Motion)',
+pdf:'pdfs/motion.pdf',
+formulas:[
+{name:'v = u + a t',exp:'চূড়ান্ত বেগ = প্রাথমিক বেগ + ত্বরণ × সময়',use:'সরাসরি গতি নির্ণয় এবং দূরত্ব গণনায়'},
+{name:'s = u t + ½ a t²',exp:'সরন = প্রাথমিক বেগ × সময় + ১/২ × ত্বরণ × সময়²',use:'দূরত্ব ও গতি সমস্যায়'},
+{name:'v² = u² + 2 a s',exp:'চূড়ান্ত বেগ² = প্রাথমিক বেগ² + ২ × ত্বরণ × সরন',use:'দূরত্ব/বেগ সম্পর্ক গণনায়'},
+{name:'a = (v − u)/t',exp:'ত্বরণ = (চূড়ান্ত বেগ − প্রাথমিক বেগ) / সময়',use:'ত্বরণ নির্ণয়ে'},
+{name:'s = v t (ধ্রুব গতি)',exp:'সরন = বেগ × সময়',use:'ধ্রুব গতি সমস্যায়'}
+]
+},
+{
+id:'force',
+title:'বল ও নিউটনের সূত্র (Force & Newton Laws)',
+pdf:'pdfs/force.pdf',
+formulas:[
+{name:'F = m a',exp:'বল = ভর × ত্বরণ',use:'নিউটনের 2nd Law সমস্যায়'},
+{name:'W = F s cosθ',exp:'কাজ = বল × সরণ × কোণ',use:'কাজ ও শক্তি নির্ণয়ে'},
+{name:'Momentum = m v',exp:'ভর × বেগ',use:'গতি এবং সংঘর্ষ সমস্যায়'}
+]
+},
+{
+id:'work_energy',
+title:'কাজ, শক্তি ও ক্ষমতা (Work, Energy & Power)',
+pdf:'pdfs/work_energy.pdf',
+formulas:[
+{name:'W = F s',exp:'কাজ = বল × সরণ',use:'কাজ নির্ণয়ে'},
+{name:'KE = ½ m v²',exp:'কাইনেটিক শক্তি',use:'গতি ও শক্তি সম্পর্কিত সমস্যা'},
+{name:'PE = m g h',exp:'পোটেনশিয়াল শক্তি',use:'উচ্চতা সম্পর্কিত শক্তি গণনায়'},
+{name:'P = W / t',exp:'ক্ষমতা = কাজ / সময়',use:'শক্তি ব্যবহারের হার গণনায়'}
+]
+},
+{
+id:'heat',
+title:'তাপ ও তাপমাত্রা (Heat & Temperature)',
+pdf:'pdfs/heat.pdf',
+formulas:[
+{name:'Q = m c ΔT',exp:'তাপ = ভর × নির্দিষ্ট তাপ × তাপমাত্রার পরিবর্তন',use:'উত্তাপ বৃদ্ধি/হ্রাস গণনায়'},
+{name:'Q = m L',exp:'গলন বা বাষ্পীভবনের তাপ',use:'ফেজ পরিবর্তনের তাপ নির্ণয়ে'}
+]
+},
+{
+id:'light',
+title:'আলোক (Light)',
+pdf:'pdfs/light.pdf',
+formulas:[
+{name:'v = f λ',exp:'আলো তরঙ্গের বেগ = ফ্রিকোয়েন্সি × তরঙ্গ দৈর্ঘ্য',use:'তরঙ্গ ও আলো সম্পর্কিত সমস্যা'},
+{name:'1/f = 1/u + 1/v',exp:'লেন্স সূত্র',use:'লেন্স ও আয়নার গণনায়'}
+]
+},
+{
+id:'waves_sound',
+title:'তরঙ্গ ও শব্দ (Waves & Sound)',
+pdf:'pdfs/waves_sound.pdf',
+formulas:[
+{name:'v = f λ',exp:'তরঙ্গের বেগ = ফ্রিকোয়েন্সি × তরঙ্গ দৈর্ঘ্য',use:'শব্দ এবং তরঙ্গ সমস্যা'},
+{name:'f2/f1 = v2/v1',exp:'ডপলার ইফেক্ট',use:'ডপলার সমস্যায়'}
+]
+},
+{
+id:'electricity',
+title:'বিদ্যুৎ (Electricity)',
+pdf:'pdfs/electricity.pdf',
+formulas:[
+{name:'V = I R',exp:'ভোল্টেজ = কারেন্ট × রোধ',use:'Ohm Law সমস্যায়'},
+{name:'P = V I',exp:'ক্ষমতা = ভোল্টেজ × কারেন্ট',use:'বিদ্যুৎ শক্তি গণনায়'},
+{name:'E = I² R t',exp:'শক্তি = কারেন্ট² × রোধ × সময়',use:'বিদ্যুৎ শক্তি ব্যবহার হিসাব'}
+]
+},
+{
+id:'electronics',
+title:'ইলেকট্রনিক্স (Electronics)',
+pdf:'pdfs/electronics.pdf',
+formulas:[
+{name:'I = V / R',exp:'কারেন্ট = ভোল্টেজ / রোধ',use:'সার্কিটে কারেন্ট নির্ণয়ে'},
+{name:'f = 1 / T',exp:'ফ্রিকোয়েন্সি = ১/সময়কাল',use:'সিগন্যাল ও ওসিলেটর সমস্যায়'}
+]
+},
+{
+id:'magnetism',
+title:'চৌম্বকত্ব (Magnetism)',
+pdf:'pdfs/magnetism.pdf',
+formulas:[
+{name:'F = B I L sinθ',exp:'চৌম্বক বল = চৌম্বক ক্ষেত্র × কারেন্ট × দৈর্ঘ্য × কোণ',use:'সার্কিটে চৌম্বক সম্পর্ক সমস্যায়'},
+{name:'Φ = B A cosθ',exp:'চৌম্বক প্রবাহ = চৌম্বক ক্ষেত্র × ক্ষেত্রফল × কোণ',use:'চৌম্বক প্রবাহ গণনায়'}
+]
+},
+{
+id:'space',
+title:'মহাকাশ বিজ্ঞান (Space Science)',
+pdf:'pdfs/space.pdf',
+formulas:[
+{name:'g = G M / R²',exp:'মাধ্যাকর্ষণ ত্বরণ = গ্যালাক্সি/গ্রহের ভর ও ব্যাসার্ধ থেকে',use:'মহাকাশ/গ্রহের শক্তি গণনায়'},
+{name:'v = √(G M / R)',exp:'উড়ন্ত বস্তুর বেগ = √(G M / R)',use:'সৌরপথ বা কক্ষপথ সমস্যা'}
+]
+]
+};
+
+// ===== Render Chapters =====
+function renderChapters() {
+  const container = document.getElementById('chaptersContainer');
+  container.innerHTML='';
+  chapters.forEach(ch=>{
+    const catDiv = document.createElement('div'); catDiv.className='category';
+    const h2 = document.createElement('h2'); h2.textContent=ch.title;
+    const pdfLink = document.createElement('a'); pdfLink.href=ch.pdf; pdfLink.className='download-link'; pdfLink.textContent='[PDF Download]'; pdfLink.target='_blank';
+    h2.appendChild(pdfLink);
+    catDiv.appendChild(h2);
+    ch.formulas.forEach(f=>{
+      const fDiv = document.createElement('div'); fDiv.className='formula-card';
+      const fName = document.createElement('h3'); fName.textContent=f.name;
+      const fExp = document.createElement('div'); fExp.className='formula-exp'; fExp.textContent=f.exp;
+      const fUse = document.createElement('div'); fUse.className='formula-use'; fUse.textContent='ব্যবহার: '+f.use;
+      fDiv.appendChild(fName); fDiv.appendChild(fExp); fDiv.appendChild(fUse);
+      catDiv.appendChild(fDiv);
+    });
+    container.appendChild(catDiv);
+  });
+}
+
+// ===== Search Function =====
+function searchFormulas() {
+  const query = document.getElementById('searchInput').value.toLowerCase();
+  const container = document.getElementById('chaptersContainer');
+  container.innerHTML='';
+  chapters.forEach(ch=>{
+    const matchedFormulas = ch.formulas.filter(f=>f.name.toLowerCase().includes(query) || f.exp.toLowerCase().includes(query) || f.use.toLowerCase().includes(query));
+    if(matchedFormulas.length>0){
+      const catDiv = document.createElement('div'); catDiv.className='category';
+      const h2 = document.createElement('h2'); h2.textContent=ch.title;
+      const pdfLink = document.createElement('a'); pdfLink.href=ch.pdf; pdfLink.className='download-link'; pdfLink.textContent='[PDF Download]'; pdfLink.target='_blank';
+      h2.appendChild(pdfLink);
+      catDiv.appendChild(h2);
+      matchedFormulas.forEach(f=>{
+        const fDiv = document.createElement('div'); fDiv.className='formula-card';
+        const fName = document.createElement('h3'); fName.textContent=f.name;
+        const fExp = document.createElement('div'); fExp.className='formula-exp'; fExp.textContent=f.exp;
+        const fUse = document.createElement('div'); fUse.className='formula-use'; fUse.textContent='ব্যবহার: '+f.use;
+        fDiv.appendChild(fName); fDiv.appendChild(fExp); fDiv.appendChild(fUse);
+        catDiv.appendChild(fDiv);
+      });
+      container.appendChild(catDiv);
+    }
+  });
+}
+
+// ===== Dark/Light Toggle =====
+document.getElementById('themeToggle').addEventListener('click',()=>{
+  document.body.classList.toggle('dark');
+  const btn = document.getElementById('themeToggle');
+  btn.textContent = document.body.classList.contains('dark') ? '☀️' : '🌙';
+});
+
+// ===== Initialize =====
+renderChapters();
+</script>
+</body>
+</html>
